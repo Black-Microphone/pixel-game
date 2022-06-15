@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
+import React, { CSSProperties, useEffect, useMemo, useRef, useState, useTransition } from 'react';
 import { TransitionGroup, CSSTransition, TransitionStatus } from 'react-transition-group';
 import './App.css';
 import { EventEmitter } from 'eventemitter3';
@@ -74,9 +74,9 @@ function RIGHT(position: number, count?: number){
 
 function App() {
 
-  const pixelsIndex = useRef(multiplePixel(3));
   const pixelCount = useRef(0);
   const eventCenter = useRef(new EventEmitter());
+  
 
   useEffect(()=>{
 
@@ -106,27 +106,35 @@ function App() {
 
   function Pixel({i}: {i: number}){
 
-    const [mark, setMark] = useState(pixelsIndex.current.includes(i));
+    const [mark, setMark] = useState(false);
+    const currentMark = useRef(mark);
+    function changeMark(v: boolean){
 
-    function click(){
-
-      if(pixelsIndex.current.includes(i)){
-
-        pixelsIndex.current = pixelsIndex.current.filter(v=>v!==i);
-        
-        setMark(false);
-
-      }
+      setMark(v);
+      currentMark.current = v;
 
     }
 
-    eventCenter.current.on('pixel', ({index})=>{
+    const color = useRef('');
+    const funClick = useRef<any>(undefined);
+    const funEnd = useRef<any>(undefined);
+
+    function click(){
+
+      funClick.current(i, currentMark.current, changeMark, color);
+
+    }
+
+    eventCenter.current.on('pixel', ({index, click, end, start})=>{
 
       if(index === i){
 
-        setMark(true);
+        funClick.current = click;
+        funEnd.current = end;
 
-      } 
+        start(i, currentMark.current, changeMark, color)
+
+      }
 
     });
 
@@ -137,14 +145,14 @@ function App() {
     const transitionStyles = {
       entering: {},
       entered: {
-        backgroundColor: 'orange',
+        backgroundColor: color.current,
         transform: 'rotate(360deg)'
       },
     } as transitionOpt;
 
     function final(){
 
-      eventCenter.current.emit('pixelPlus', {});
+      funEnd.current(i, currentMark.current, changeMark, color);
 
     }
 
@@ -171,9 +179,14 @@ function App() {
 
   }, []);
 
-  return (
-    <div className="App"><Table/></div>
-  );
+  function start(){
+
+
+
+  }
+
+  return (<div className="App"><div className='start' onClick={start}>Start</div><Table/></div>);
+
 }
 
 export default App;
