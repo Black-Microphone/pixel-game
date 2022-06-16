@@ -1,35 +1,11 @@
-import React, { CSSProperties, useEffect, useMemo, useRef, useState, MutableRefObject } from 'react';
-import { TransitionGroup, CSSTransition, TransitionStatus } from 'react-transition-group';
+import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
+import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import './App.css';
 import { EventEmitter } from 'eventemitter3';
-import { InitialMovesObject } from './moves';
+import { transitionOpt } from './globalTypes';
+import { initSpeedPixel } from './pixelSpeed';
 
 const size = 10;
-
-const MOVES = InitialMovesObject(size);
-
-const {
-  UP, 
-  LEFT, 
-  RIGHT, 
-  DOWN, 
-  CORNER_UP_LEFT, 
-  CORNER_UP_RIGHT, 
-  CORNER_DOWN_RIGHT, 
-  CORNER_DOWN_LEFT,
-  GroupMovesByLimits
-} = MOVES;
-
-const random = (n: number) => Math.floor(Math.random()*n);
-
-function randomPixel(){
-
-  return {x: random(size), y: random(size)};
-
-}
-
-type eventPixel = (index: {x: number, y: number}, mark: boolean, changeMark: (v: boolean)=>void, color: MutableRefObject<string> )=>void;
-type transitionOpt = {[x in TransitionStatus]: CSSProperties};
 
 const pixelTransition = {
 
@@ -59,15 +35,23 @@ function multiplePixel(count: number){
 
 }
 
-//Move
+// GenerateTable.
 
 
+function GenerateTable(){
+
+  return new Array(size).fill(0).map((v, Y)=>new Array(size).fill(0).map((e, X)=>({x: X, y: Y, mark: false})));
+
+}
+
+//App
 
 function App() {
 
   const pixelCount = useRef(0);
   const eventCenter = useRef(new EventEmitter());
-  
+
+  const tablesPositions = useRef(GenerateTable());
 
   useEffect(()=>{
 
@@ -170,72 +154,9 @@ function App() {
 
   }, []);
 
-  function initSpeedPixel(){
-
-    const COLOR = 'rgb(38, 184, 99)';
-
-    let { x: X, y: Y } = randomPixel();
-
-    function randomMove(x: number, y: number){
-
-      const moves = GroupMovesByLimits.filter(e=> !e.isOverLimit(x, y)).map(e=>e.move);
-
-      console.log(moves);
-
-      return moves[Math.floor(moves.length*Math.random())](x, y);
-
-    }
-
-    let tempTimeOut: any = undefined;
-    
-    const start: eventPixel = (index, mark, changeMark, color)=>{
-      
-      color.current = COLOR;
-      changeMark(true);
-      
-    };
-    
-    const click: eventPixel = (index, mark, changeMark, color)=>{
-      
-      if(!mark) return;
-
-      clearInterval(tempTimeOut);
-      changeMark(false);
-      
-    };
-    
-    const end: eventPixel = (index, mark, changeMark, color)=>{
-      
-      
-      
-    };
-
-    const last: eventPixel = (index, mark, changeMark, color)=>{
-      
-      changeMark(false);
-      
-    };
-    
-    tempTimeOut = setInterval(()=>{
-
-      eventCenter.current.emit(`pixel-${X}-${Y}`, {start: last});
-
-      const { x, y } = randomMove(X, Y);
-
-      X = x;
-      Y = y;
-
-      eventCenter.current.emit(`pixel-${X}-${Y}`, {start, click, end});
-      
-    }, 1500);
-    
-    eventCenter.current.emit(`pixel-${X}-${Y}`, {start, click, end});
-
-  }
-
   function start(){
 
-    initSpeedPixel();
+    initSpeedPixel(eventCenter, size);
 
   }
 
