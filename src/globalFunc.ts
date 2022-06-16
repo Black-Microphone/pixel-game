@@ -1,11 +1,13 @@
+import { MutableRefObject } from 'react';
 import { table } from './globalTypes';
-import { InitialMovesObject } from './moves';
 
-function randomPixel(table: table){
+const random = (n: number) => Math.floor(Math.random()*n);
 
-    const Y = Math.floor(table.length*Math.random());
+function randomPixel(table: MutableRefObject<table>){
 
-    const row = table[Y].filter(v=>!v.mark);
+    const Y = Math.floor(table.current.length*Math.random());
+
+    const row = table.current[Y].filter(v=>!v.mark);
 
     const { x, y } = row[Math.floor(row.length*Math.random())];
 
@@ -13,14 +15,6 @@ function randomPixel(table: table){
   
 }
 
-const random = (n: number) => Math.floor(Math.random()*n);
-
-// getFeeOrtogonalMoves
-function getFeeOrtogonalMovesIfUnMark(table: table, x: number, y: number, moves: ){
-
-
-
-}
 
 
 export {

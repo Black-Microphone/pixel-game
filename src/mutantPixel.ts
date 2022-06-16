@@ -4,7 +4,7 @@ import { eventPixel, table } from './globalTypes';
 import { InitialMovesObject } from './moves';
 import { randomPixel } from './globalFunc';
 
-function initSpeedPixel(
+function iniMutantPixel(
     eventCenter: MutableRefObject<InstanceType<typeof EventEmitter<string | symbol, any>>>, 
     table: MutableRefObject<table>
     ){
@@ -12,30 +12,38 @@ function initSpeedPixel(
     const size = table.current.length;
 
     const MOVES = InitialMovesObject(size);
+    const { GroupMovesCardinalsByLimits } = MOVES;
 
-    const { GroupMovesByLimits } = MOVES;
-
-    const COLOR = 'rgb(38, 184, 99)';
+    const COLOR = 'rgb(172, 38, 184)'; /* pink */;
 
     let { x: _X, y: _Y } = randomPixel(table);
 
-    function randomMove(x: number, y: number){
+    let currentPixels: {x: number, y: number}[] = [];
 
-        const moves = GroupMovesByLimits.filter(e=> !e.isOverLimit(x, y)).map(e=>e.move);
-
-        const validMoves = moves.map(e=>{
-
-            const {x: X, y: Y} = e(x, y);
-
-            return table.current[Y][X];
+    function randomPart(){
         
-        }).filter(e=> !e.mark);
+        const pixelsAndMoves = currentPixels.map(({x: X, y: Y})=> {
+            
+            const movesFree = GroupMovesCardinalsByLimits
+                .filter(({isOverLimit})=> !isOverLimit(X, Y))
+                .map(({move})=>move(X, Y))
+                .filter(({x, y})=>{
 
-        if(!validMoves.length){
+                    if(table.current[y][x].mark){
 
-            return {x, y}
+                        return false;
 
-        }else return validMoves[Math.floor(validMoves.length*Math.random())];
+                    } else return true;
+
+                });
+
+            return movesFree;
+
+        }).filter(v=>v.length);
+
+        const pixelMoves = pixelsAndMoves[Math.floor(pixelsAndMoves.length*Math.random())];
+
+        return pixelMoves[Math.floor(pixelMoves.length*Math.random())]
 
     }
 
@@ -71,26 +79,25 @@ function initSpeedPixel(
 
     tempTimeInterval = setInterval(()=>{
 
-        table.current[_Y][_X].mark = false;
-        eventCenter.current.emit(`pixel-${_X}-${_Y}`, {start: last});
-
-        const { x, y } = randomMove(_X, _Y);
+        const { x, y } = randomPart();
 
         _X = x;
         _Y = y;
 
         table.current[_Y][_X].mark = true;
         eventCenter.current.emit(`pixel-${_X}-${_Y}`, {start, click, end});
+        currentPixels.push({x: _X, y: _Y});
         
     }, 1500);
 
-    
+    table.current[_Y][_X].mark = true;
     eventCenter.current.emit(`pixel-${_X}-${_Y}`, {start, click, end});
+    currentPixels.push({x: _X, y: _Y});
 
 }
 
 export {
 
-    initSpeedPixel
+    iniMutantPixel
 
 }

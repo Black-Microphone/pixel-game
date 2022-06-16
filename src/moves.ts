@@ -63,41 +63,49 @@ function InitialMovesObject(SIZE: number){
       
     }
 
-    const GroupMovesByLimits = [
+    const GroupMoves = {
 
-        {
+        up: {
             isOverLimit: (x: number, y: number)=>y===0,
             move: UP,
         },
-        {
+        left: {
             isOverLimit: (x: number, y: number)=>x===0,
             move: LEFT,
         },
-        {
+        down: {
             isOverLimit: (x: number, y: number)=>y===size,
             move: DOWN,
         },
-        {
+        right: {
             isOverLimit: (x: number, y: number)=>x===size,
             move: RIGHT,
         },
-        {
+        corner_up_left: {
             isOverLimit: (x: number, y: number)=>(y===0) || (x===0),
             move: CORNER_UP_LEFT,
         },
-        {
+        corner_up_right: {
             isOverLimit: (x: number, y: number)=>(y===0) || (x===size),
             move: CORNER_UP_RIGHT,
         },
-        {
+        corner_down_left: {
             isOverLimit: (x: number, y: number)=>(y===size) || (x===0),
             move: CORNER_DOWN_LEFT,
         },
-        {
+        corner_down_right: {
             isOverLimit: (x: number, y: number)=>(y===size) || (x===size),
             move: CORNER_DOWN_RIGHT,
         },
 
+    };
+
+    const GroupMovesByLimits = Object.values(GroupMoves);
+    const GroupMovesCardinalsByLimits = [
+        GroupMoves.up, 
+        GroupMoves.down,
+        GroupMoves.left,
+        GroupMoves.right
     ];
 
     const moves = {
@@ -112,6 +120,17 @@ function InitialMovesObject(SIZE: number){
         CORNER_DOWN_LEFT,
 
     }
+    const movesArray = Object.values(moves);
+
+    const movesCardinals = {
+
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT
+
+    }
+    const movesCardinalsArray = Object.values(moves);
 
     return {
 
@@ -125,6 +144,10 @@ function InitialMovesObject(SIZE: number){
         CORNER_DOWN_LEFT,
         moves,
         GroupMovesByLimits,
+        movesArray,
+        movesCardinals,
+        movesCardinalsArray,
+        GroupMovesCardinalsByLimits
 
     };
 

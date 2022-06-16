@@ -4,6 +4,7 @@ import './App.css';
 import { EventEmitter } from 'eventemitter3';
 import { transitionOpt } from './globalTypes';
 import { initSpeedPixel } from './pixelSpeed';
+import { iniMutantPixel } from './mutantPixel';
 
 const size = 10;
 
@@ -36,7 +37,6 @@ function multiplePixel(count: number){
 }
 
 // GenerateTable.
-
 
 function GenerateTable(){
 
@@ -156,7 +156,7 @@ function App() {
 
   function start(){
 
-    initSpeedPixel(eventCenter, size);
+    iniMutantPixel(eventCenter, tablesPositions);
 
   }
 
