@@ -180,6 +180,8 @@ function App() {
 
       const moves = GroupMovesByLimits.filter(e=> !e.isOverLimit(x, y)).map(e=>e.move);
 
+      console.log(moves);
+
       return moves[Math.floor(moves.length*Math.random())](x, y);
 
     }
