@@ -1,16 +1,31 @@
-import React, { CSSProperties, useEffect, useMemo, useRef, useState, useTransition } from 'react';
+import React, { CSSProperties, useEffect, useMemo, useRef, useState, MutableRefObject } from 'react';
 import { TransitionGroup, CSSTransition, TransitionStatus } from 'react-transition-group';
 import './App.css';
 import { EventEmitter } from 'eventemitter3';
+import { InitialMovesObject } from './moves';
 
 const size = 10;
 
-function randomPixel(size: number){
+const MOVES = InitialMovesObject(size);
+
+const {
+  UP, 
+  LEFT, 
+  RIGHT, 
+  DOWN, 
+  CORNER_UP_LEFT, 
+  CORNER_UP_Right, 
+  CORNER_DOWN_Right, 
+  CORNER_DOWN_Left 
+} = MOVES;
+
+function randomPixel(){
 
   return Math.floor(Math.random()*(size*size));
 
 }
 
+type eventPixel = (index: number, mark: boolean, changeMark: (v: boolean)=>void, color: MutableRefObject<string> )=>void;
 type transitionOpt = {[x in TransitionStatus]: CSSProperties};
 
 const pixelTransition = {
@@ -43,34 +58,7 @@ function multiplePixel(count: number){
 
 //Move
 
-function UP(position: number, count?: number){
 
-  const COUNT = count || 0;
-
-  return Math.round(Math.min((position - size) + COUNT, 0));
-
-}
-function DOWN(position: number, count?: number){
-
-  const COUNT = count || 0;
-
-  return Math.round(Math.min((position + size) + COUNT, size*size));
-
-}
-function LEFT(position: number, count?: number){
-
-  const COUNT = count || 1;
-
-  return Math.round(Math.min(position - COUNT, 0));
-
-}
-function RIGHT(position: number, count?: number){
-
-  const COUNT = count || 1;
-
-  return Math.round(Math.min(position + COUNT, size*size));
-
-}
 
 function App() {
 
@@ -85,20 +73,6 @@ function App() {
       pixelCount.current++;
 
       console.log(pixelCount.current);
-
-      if(pixelCount.current === 3){
-
-        pixelsIndex.current = multiplePixel(3);
-
-        pixelsIndex.current.forEach((v)=>{
-  
-          eventCenter.current.emit('pixel', {index: v});
-  
-        });
-
-        pixelCount.current = 0;
-
-      }
 
     });
 
@@ -121,7 +95,7 @@ function App() {
 
     function click(){
 
-      funClick.current(i, currentMark.current, changeMark, color);
+      if(funClick.current) funClick.current(i, currentMark.current, changeMark, color);
 
     }
 
@@ -132,7 +106,7 @@ function App() {
         funClick.current = click;
         funEnd.current = end;
 
-        start(i, currentMark.current, changeMark, color)
+        start(i, currentMark.current, changeMark, color);
 
       }
 
@@ -152,7 +126,12 @@ function App() {
 
     function final(){
 
-      funEnd.current(i, currentMark.current, changeMark, color);
+      if(funEnd.current) funEnd.current(i, currentMark.current, changeMark, color);
+
+      //Reset
+
+      funClick.current = undefined;
+      funEnd.current = undefined;
 
     }
 
@@ -179,9 +158,66 @@ function App() {
 
   }, []);
 
+  function initSpeedPixel(){
+
+    const COLOR = 'rgb(38, 184, 99)';
+
+    let pixelPosition = randomPixel();
+
+    const arrayMoves = Object.values(MOVES);
+
+    function randomMove(position: number){
+
+      return arrayMoves[Math.floor(arrayMoves.length*Math.random())](position);
+
+    }
+
+    let tempTimeOut: any = undefined;
+    
+    const start: eventPixel = (index, mark, changeMark, color)=>{
+      
+      color.current = COLOR;
+      changeMark(true);
+      
+    };
+    
+    const click: eventPixel = (index, mark, changeMark, color)=>{
+      
+      if(!mark) return;
+
+      clearInterval(tempTimeOut);
+      changeMark(false);
+      
+    };
+    
+    const end: eventPixel = (index, mark, changeMark, color)=>{
+      
+      
+      
+    };
+
+    const last: eventPixel = (index, mark, changeMark, color)=>{
+      
+      changeMark(false);
+      
+    };
+    
+    tempTimeOut = setInterval(()=>{
+
+      eventCenter.current.emit('pixel', {index: pixelPosition, start: last});
+
+      pixelPosition = randomMove(pixelPosition);
+      eventCenter.current.emit('pixel', {index: pixelPosition, start, click, end});
+      
+    }, 1500);
+    
+    eventCenter.current.emit('pixel', {index: pixelPosition, start, click, end});
+
+  }
+
   function start(){
 
-
+    initSpeedPixel();
 
   }
 
