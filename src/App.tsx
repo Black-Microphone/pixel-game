@@ -14,18 +14,21 @@ const {
   RIGHT, 
   DOWN, 
   CORNER_UP_LEFT, 
-  CORNER_UP_Right, 
-  CORNER_DOWN_Right, 
-  CORNER_DOWN_Left 
+  CORNER_UP_RIGHT, 
+  CORNER_DOWN_RIGHT, 
+  CORNER_DOWN_LEFT,
+  GroupMovesByLimits
 } = MOVES;
+
+const random = (n: number) => Math.floor(Math.random()*n);
 
 function randomPixel(){
 
-  return Math.floor(Math.random()*(size*size));
+  return {x: random(size), y: random(size)};
 
 }
 
-type eventPixel = (index: number, mark: boolean, changeMark: (v: boolean)=>void, color: MutableRefObject<string> )=>void;
+type eventPixel = (index: {x: number, y: number}, mark: boolean, changeMark: (v: boolean)=>void, color: MutableRefObject<string> )=>void;
 type transitionOpt = {[x in TransitionStatus]: CSSProperties};
 
 const pixelTransition = {
@@ -78,7 +81,9 @@ function App() {
 
   }, []);
 
-  function Pixel({i}: {i: number}){
+  function Pixel({x, y}: {x: number, y: number}){
+
+    const name = `pixel-${x}-${y}`;
 
     const [mark, setMark] = useState(false);
     const currentMark = useRef(mark);
@@ -95,20 +100,21 @@ function App() {
 
     function click(){
 
-      if(funClick.current) funClick.current(i, currentMark.current, changeMark, color);
+      if(funClick.current) funClick.current({x, y}, currentMark.current, changeMark, color);
 
     }
 
-    eventCenter.current.on('pixel', ({index, click, end, start})=>{
+    eventCenter.current.on(name, ({click, end, start})=>{
 
-      if(index === i){
+      //Reset
+      funClick.current = undefined;
+      funEnd.current = undefined;
 
-        funClick.current = click;
-        funEnd.current = end;
+      // Init
+      funClick.current = click;
+      funEnd.current = end;
 
-        start(i, currentMark.current, changeMark, color);
-
-      }
+      start({x, y}, currentMark.current, changeMark, color);
 
     });
 
@@ -126,7 +132,7 @@ function App() {
 
     function final(){
 
-      if(funEnd.current) funEnd.current(i, currentMark.current, changeMark, color);
+      if(funEnd.current) funEnd.current({x, y}, currentMark.current, changeMark, color);
 
       //Reset
 
@@ -136,7 +142,7 @@ function App() {
     }
 
     return (
-      <CSSTransition key={i} timeout={pixelTransition.duration} onExited={final} in={mark}>
+      <CSSTransition key={name} timeout={pixelTransition.duration} onExited={final} in={mark}>
         {(state)=><div className='pixel' onClick={click} style={{
           ...defaultStyle,
           ...transitionStyles[state],
@@ -146,8 +152,14 @@ function App() {
   }
 
   const Table = useMemo(()=>()=>{
+
+    const pixels: any[] = [];
     
-    const pixels = new Array(size*size).fill(0).map((v, i)=><Pixel key={i} i={i}/>);
+    new Array(size).fill(0).map((v, y)=>{
+      new Array(size).fill(0).map((v, x)=>{
+        pixels.push(<Pixel key={`pixel-${x}-${y}`} x={x} y={y}/>)
+      });
+    });
 
       return (<TransitionGroup  className='table' style={{
 
@@ -162,13 +174,13 @@ function App() {
 
     const COLOR = 'rgb(38, 184, 99)';
 
-    let pixelPosition = randomPixel();
+    let { x: X, y: Y } = randomPixel();
 
-    const arrayMoves = Object.values(MOVES);
+    function randomMove(x: number, y: number){
 
-    function randomMove(position: number){
+      const moves = GroupMovesByLimits.filter(e=> !e.isOverLimit(x, y)).map(e=>e.move);
 
-      return arrayMoves[Math.floor(arrayMoves.length*Math.random())](position);
+      return moves[Math.floor(moves.length*Math.random())](x, y);
 
     }
 
@@ -204,14 +216,18 @@ function App() {
     
     tempTimeOut = setInterval(()=>{
 
-      eventCenter.current.emit('pixel', {index: pixelPosition, start: last});
+      eventCenter.current.emit(`pixel-${X}-${Y}`, {start: last});
 
-      pixelPosition = randomMove(pixelPosition);
-      eventCenter.current.emit('pixel', {index: pixelPosition, start, click, end});
+      const { x, y } = randomMove(X, Y);
+
+      X = x;
+      Y = y;
+
+      eventCenter.current.emit(`pixel-${X}-${Y}`, {start, click, end});
       
     }, 1500);
     
-    eventCenter.current.emit('pixel', {index: pixelPosition, start, click, end});
+    eventCenter.current.emit(`pixel-${X}-${Y}`, {start, click, end});
 
   }
 

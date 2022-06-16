@@ -1,7 +1,9 @@
 
-function InitialMovesObject(size: number){
+function InitialMovesObject(SIZE: number){
 
-    const correctRange = (c: number)=>Math.min(Math.max(c, 0), size-1);
+    const size = SIZE-1;
+
+    const correctRange = (c: number)=>Math.min(Math.max(c, 0), size);
 
     function UP(X: number, Y: number, count?: number){
 
@@ -61,7 +63,44 @@ function InitialMovesObject(size: number){
       
     }
 
-    return {
+    const GroupMovesByLimits = [
+
+        {
+            isOverLimit: (x: number, y: number)=>y<0,
+            move: UP,
+        },
+        {
+            isOverLimit: (x: number, y: number)=>x<0,
+            move: LEFT,
+        },
+        {
+            isOverLimit: (x: number, y: number)=>y>size,
+            move: DOWN,
+        },
+        {
+            isOverLimit: (x: number, y: number)=>x>size,
+            move: RIGHT,
+        },
+        {
+            isOverLimit: (x: number, y: number)=>(y<0) || (x<0),
+            move: CORNER_UP_LEFT,
+        },
+        {
+            isOverLimit: (x: number, y: number)=>(y<0) || (x>size),
+            move: CORNER_UP_RIGHT,
+        },
+        {
+            isOverLimit: (x: number, y: number)=>(y>size) || (x<0),
+            move: CORNER_DOWN_LEFT,
+        },
+        {
+            isOverLimit: (x: number, y: number)=>(y>size) || (x>size),
+            move: CORNER_DOWN_RIGHT,
+        },
+
+    ];
+
+    const moves = {
 
         UP,
         DOWN,
@@ -71,6 +110,21 @@ function InitialMovesObject(size: number){
         CORNER_UP_RIGHT,
         CORNER_DOWN_RIGHT,
         CORNER_DOWN_LEFT,
+
+    }
+
+    return {
+        
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT,
+        CORNER_UP_LEFT,
+        CORNER_UP_RIGHT,
+        CORNER_DOWN_RIGHT,
+        CORNER_DOWN_LEFT,
+        moves,
+        GroupMovesByLimits,
 
     };
 
