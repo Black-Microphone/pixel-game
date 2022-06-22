@@ -23,9 +23,9 @@ function initSpeedPixel(
 
         const moves = GroupMovesByLimits.filter(e=> !e.isOverLimit(x, y)).map(e=>e.move);
 
-        const validMoves = moves.map(e=>{
+        const validMoves = [...moves.map(e=>e(x, y)), ...moves.map(e=>e(x, y, 2))].map(e=>{
 
-            const {x: X, y: Y} = e(x, y);
+            const {x: X, y: Y} = e;
 
             return table.current[Y][X];
         
@@ -72,7 +72,7 @@ function initSpeedPixel(
     tempTimeInterval = setInterval(()=>{
 
         table.current[_Y][_X].mark = false;
-        eventCenter.current.emit(`pixel-${_X}-${_Y}`, {start: last});
+        eventCenter.current.emit(`pixel-${_X}-${_Y}`, {start: last, click: undefined});
 
         const { x, y } = randomMove(_X, _Y);
 
@@ -84,7 +84,7 @@ function initSpeedPixel(
         
     }, 1500);
 
-    
+    table.current[_Y][_X].mark = true;
     eventCenter.current.emit(`pixel-${_X}-${_Y}`, {start, click, end});
 
 }

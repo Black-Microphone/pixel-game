@@ -18,6 +18,8 @@ HTML{
 
   flex-direction: column;
 
+  zoom: normal;
+
 }
 
 .table{
@@ -36,6 +38,8 @@ HTML{
   border-radius: 3px;
 
   background-color: rgb(75, 77, 124);
+
+  cursor: pointer;
 
 }
 

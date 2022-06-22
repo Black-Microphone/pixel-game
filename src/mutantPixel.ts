@@ -5,7 +5,7 @@ import { InitialMovesObject } from './moves';
 import { randomPixel } from './globalFunc';
 
 function iniMutantPixel(
-    eventCenter: MutableRefObject<InstanceType<typeof EventEmitter<string | symbol, any>>>, 
+    eventCenter: MutableRefObject<InstanceType<typeof EventEmitter<string | symbol, any>>>,
     table: MutableRefObject<table>
     ){
 
@@ -14,7 +14,7 @@ function iniMutantPixel(
     const MOVES = InitialMovesObject(size);
     const { GroupMovesCardinalsByLimits } = MOVES;
 
-    const COLOR = 'rgb(172, 38, 184)'; /* pink */;
+    const COLOR = 'rgb(172, 38, 184)' /* pink */;
 
     let { x: _X, y: _Y } = randomPixel(table);
 
@@ -60,8 +60,16 @@ function iniMutantPixel(
         
         if(!mark) return;
 
-        clearInterval(tempTimeInterval);
         changeMark(false);
+        currentPixels = currentPixels.filter(e=>!((e.x === index.x) && (e.y === index.y)));
+        table.current[index.y][index.x].mark = false;
+
+        if(!currentPixels.length){
+
+            clearInterval(tempTimeInterval);
+
+        }
+
         
     };
 

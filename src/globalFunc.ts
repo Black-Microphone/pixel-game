@@ -15,12 +15,17 @@ function randomPixel(table: MutableRefObject<table>){
   
 }
 
+function randomArrE<T>(array: T[]){
 
+    return array[Math.floor(array.length*Math.random())];
+
+}
 
 export {
 
     random,
-    randomPixel
+    randomPixel,
+    randomArrE
 
 }
   

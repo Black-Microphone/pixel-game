@@ -5,6 +5,9 @@ import { EventEmitter } from 'eventemitter3';
 import { transitionOpt } from './globalTypes';
 import { initSpeedPixel } from './pixelSpeed';
 import { iniMutantPixel } from './mutantPixel';
+import { iniHeavyPixel } from './heavyPixel';
+import { iniPsychoPixel } from './psychoPixel';
+import { iniGuardianPixel } from './guardianPixel';
 
 const size = 10;
 
@@ -13,28 +16,6 @@ const pixelTransition = {
   duration: 100
 
 };
-
-function multiplePixel(count: number){
-
-  let array = new Array(size*size).fill(0).map((v, i)=>i);
-
-  const result: number[] = [];
-
-  for(let i = 0; i < count ; i++){
-
-    const currentIndex = Math.floor(array.length*Math.random());
-    
-    console.log('index', currentIndex);
-
-    result.push(array[currentIndex]);
-
-    array = array.filter(v=>v!==currentIndex);
-
-  }
-
-  return result;
-
-}
 
 // GenerateTable.
 
@@ -156,7 +137,11 @@ function App() {
 
   function start(){
 
+    iniPsychoPixel(eventCenter, tablesPositions);
+    iniGuardianPixel(eventCenter, tablesPositions);
     iniMutantPixel(eventCenter, tablesPositions);
+    initSpeedPixel(eventCenter, tablesPositions);
+    iniHeavyPixel(eventCenter, tablesPositions);
 
   }
 
