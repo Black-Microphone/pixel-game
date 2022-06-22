@@ -51,7 +51,7 @@ function iniHeavyPixel(
 
         life++;
 
-    }, 1500);
+    }, 3000);
 
     table.current[_Y][_X].mark = true;
     eventCenter.current.emit(`pixel-${_X}-${_Y}`, {start, click, end});

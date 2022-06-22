@@ -20,6 +20,14 @@ HTML{
 
   zoom: normal;
 
+  font-family: sans-serif;
+
+}
+
+*, *::before, *::after{
+
+  box-sizing: border-box;
+
 }
 
 .table{
@@ -43,28 +51,24 @@ HTML{
 
 }
 
-.table .pixel-speed{
+.start{
 
-  background-color: rgb(38, 184, 99);
+  color: white;
 
-}
-.table .pixel-mutan{
+  font-weight: bold;
 
-  background-color: rgb(172, 38, 184);
+  font-size: 2em;
 
-}
-.table .pixel-heavy{
+  background-color: black;
 
-  background-color: rgb(184, 38, 38);
+  padding: 10px;
 
-}
-.table .pixel-psycho{
+  width: 70%;
 
-  background-color: rgb(38, 174, 184);
+  display: flex;
 
-}
-.table .pixel-guardian{
+  justify-content: center;
 
-  background-color: rgb(184, 104, 38);
+  align-items: center;
 
 }

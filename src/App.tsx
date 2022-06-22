@@ -8,6 +8,7 @@ import { iniMutantPixel } from './mutantPixel';
 import { iniHeavyPixel } from './heavyPixel';
 import { iniPsychoPixel } from './psychoPixel';
 import { iniGuardianPixel } from './guardianPixel';
+import { ModalInitialInformation } from './modal';
 
 const size = 10;
 
@@ -25,14 +26,25 @@ function GenerateTable(){
 
 }
 
-//App
+//first zero
+function firstZero(n: number){
 
+  const N = String(n);
+
+  if(N.length === 1) return 0 + N;
+    else return N;
+
+}
+
+//App
 function App() {
 
   const pixelCount = useRef(0);
   const eventCenter = useRef(new EventEmitter());
 
   const tablesPositions = useRef(GenerateTable());
+
+  const recordIntervalTime = useRef<any>();
 
   useEffect(()=>{
 
@@ -135,7 +147,24 @@ function App() {
 
   }, []);
 
+  const [viewTime, setViewTime] = useState('---');
+  const time = useRef(0);
+
   function start(){
+
+    recordIntervalTime.current = undefined;
+
+    recordIntervalTime.current = setInterval(()=>{
+
+      time.current+= 100;
+
+      const mili = firstZero(Math.trunc((time.current%1000))/100)
+      const seconds = firstZero(Math.trunc((time.current/1000)%60));
+      const minutes = firstZero(Math.trunc(((time.current/1000)/60)%60));
+
+      setViewTime(`${minutes}:${seconds}:${mili}`);
+
+    }, 100);
 
     iniPsychoPixel(eventCenter, tablesPositions);
     iniGuardianPixel(eventCenter, tablesPositions);
@@ -145,7 +174,10 @@ function App() {
 
   }
 
-  return (<div className="App"><div className='start' onClick={start}>Start</div><Table/></div>);
+  return (<div className="App">
+    <ModalInitialInformation/>
+    <div className='start' onClick={start}>{viewTime}</div><Table/>
+  </div>);
 
 }
 
