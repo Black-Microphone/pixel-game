@@ -1,7 +1,7 @@
 import { EventEmitter } from 'eventemitter3';
 import { MutableRefObject } from 'react';
 import { eventPixel, table } from './globalTypes';
-import { randomPixel } from './globalFunc';
+import { randomPixel, isOverLimit } from './globalFunc';
 import { InitialMovesObject } from './moves';
 
 function iniGuardianPixel(
@@ -26,14 +26,16 @@ function iniGuardianPixel(
 
     const click: eventPixel = (index, mark, changeMark, color)=>{
 
+        if(!mark) return;
+
         if((index.x === _X) && (index.y === _Y)){
 
-            if(!mark) return;
 
             if(!shieldsCoordinates.length){
 
                 changeMark(false);
                 table.current[index.y][index.x].mark = false;
+                eventCenter.current.emit('pixel-complete');
 
             }
             
@@ -63,14 +65,16 @@ function iniGuardianPixel(
     getSquare(_X, _Y, 1)
         .forEach(({ x, y })=>{
 
-            if(!table.current[y][x].mark){
+            if(!table.current[y][x].mark && !(isOverLimit(x) || isOverLimit(y))){
 
                 shieldsObject[`${x}-${y}`] = {x, y};
 
             };
 
-        })
+        });
         
+    delete shieldsObject[`${_X}-${_Y}`];
+
     shieldsCoordinates = Object.values(shieldsObject);
 
     shieldsCoordinates.forEach(({x, y})=>{

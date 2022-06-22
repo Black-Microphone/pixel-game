@@ -9,6 +9,7 @@ import { iniHeavyPixel } from './heavyPixel';
 import { iniPsychoPixel } from './psychoPixel';
 import { iniGuardianPixel } from './guardianPixel';
 import { ModalInitialInformation } from './modal';
+import { eventPixel } from './globalTypes';
 
 const size = 10;
 
@@ -46,6 +47,8 @@ function App() {
 
   const recordIntervalTime = useRef<any>();
 
+  const pixelsCompletes = useRef(0);
+
   useEffect(()=>{
 
     eventCenter.current.on('pixelPlus', (data)=>{
@@ -55,6 +58,18 @@ function App() {
       console.log(pixelCount.current);
 
     });
+
+    eventCenter.current.on('pixel-complete', ()=>{
+
+      const count = ++pixelsCompletes.current;
+
+      if(count === 5){
+
+        end();
+
+      }
+
+    })
 
   }, []);
 
@@ -149,28 +164,62 @@ function App() {
 
   const [viewTime, setViewTime] = useState('---');
   const time = useRef(0);
+  const timeStart = useRef(false);
+
+  function resetTable(){
+
+    tablesPositions.current.flat().forEach(({x, y})=>{
+
+      const start: eventPixel = (index, mark, changeMark)=>{
+
+        changeMark(false);
+
+      }
+
+      eventCenter.current.emit(`pixel-${x}-${y}`, {start, end: undefined, click: undefined, destroy: true});
+      tablesPositions.current[y][x].mark = false;
+
+    });
+
+  }
+
+  function end(){
+
+    pixelsCompletes.current = 0;
+    clearInterval(recordIntervalTime.current);
+    resetTable();
+    timeStart.current = false;
+
+  }
 
   function start(){
 
-    recordIntervalTime.current = undefined;
+    if(!timeStart.current){
 
-    recordIntervalTime.current = setInterval(()=>{
+      recordIntervalTime.current = undefined;
+      time.current = 0;
 
-      time.current+= 100;
+      recordIntervalTime.current = setInterval(()=>{
+  
+        time.current+= 100;
+  
+        const mili = firstZero(Math.trunc((time.current%1000))/100);
+        const seconds = firstZero(Math.trunc((time.current/1000)%60));
+        const minutes = firstZero(Math.trunc(((time.current/1000)/60)%60));
+  
+        setViewTime(`${minutes}:${seconds}:${mili}`);
+  
+      }, 100);
+  
+      iniPsychoPixel(eventCenter, tablesPositions);
+      iniGuardianPixel(eventCenter, tablesPositions);
+      iniMutantPixel(eventCenter, tablesPositions);
+      initSpeedPixel(eventCenter, tablesPositions);
+      iniHeavyPixel(eventCenter, tablesPositions);
 
-      const mili = firstZero(Math.trunc((time.current%1000))/100)
-      const seconds = firstZero(Math.trunc((time.current/1000)%60));
-      const minutes = firstZero(Math.trunc(((time.current/1000)/60)%60));
+      timeStart.current = true;
 
-      setViewTime(`${minutes}:${seconds}:${mili}`);
-
-    }, 100);
-
-    iniPsychoPixel(eventCenter, tablesPositions);
-    iniGuardianPixel(eventCenter, tablesPositions);
-    iniMutantPixel(eventCenter, tablesPositions);
-    initSpeedPixel(eventCenter, tablesPositions);
-    iniHeavyPixel(eventCenter, tablesPositions);
+    }
 
   }
 

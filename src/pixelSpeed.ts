@@ -54,6 +54,7 @@ function initSpeedPixel(
 
         clearInterval(tempTimeInterval);
         changeMark(false);
+        eventCenter.current.emit('pixel-complete');
         
     };
 
@@ -68,6 +69,22 @@ function initSpeedPixel(
         changeMark(false);
         
     };
+
+    const Destroy = ()=>{
+
+        clearInterval(tempTimeInterval);
+
+    }
+    
+    eventCenter.current.on(`pixel-${_X}-${_Y}`, ({destroy})=>{
+
+        if(destroy){
+
+            Destroy();
+
+        }
+
+    });
 
     tempTimeInterval = setInterval(()=>{
 

@@ -21,11 +21,18 @@ function randomArrE<T>(array: T[]){
 
 }
 
+function isOverLimit(c: number){
+
+    return ((c < 0) || (c > 15));
+
+}
+
 export {
 
     random,
     randomPixel,
-    randomArrE
+    randomArrE,
+    isOverLimit
 
 }
   

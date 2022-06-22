@@ -1,7 +1,7 @@
 import { EventEmitter } from 'eventemitter3';
 import { MutableRefObject } from 'react';
 import { eventPixel, table } from './globalTypes';
-import { randomPixel, randomArrE } from './globalFunc';
+import { randomPixel, randomArrE, isOverLimit } from './globalFunc';
 import { InitialMovesObject } from './moves';
 
 function iniPsychoPixel(
@@ -25,10 +25,10 @@ function iniPsychoPixel(
             .flat()
             .filter(({x, y})=>{
 
-                const xLimit = ((x < 16) && (x >= 0));
-                const yLimit = ((y < 16) && (y >= 0));
+                const xLimit = isOverLimit(x);
+                const yLimit = isOverLimit(y);
 
-                return xLimit && yLimit;
+                return !(xLimit || yLimit);
 
             });
         
@@ -107,6 +107,8 @@ function iniPsychoPixel(
                 eventCenter.current.emit(`pixel-${x}-${y}`, {start: final});
 
             });
+
+            eventCenter.current.emit('pixel-complete');
 
         }
 

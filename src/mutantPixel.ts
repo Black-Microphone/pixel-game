@@ -67,6 +67,7 @@ function iniMutantPixel(
         if(!currentPixels.length){
 
             clearInterval(tempTimeInterval);
+            eventCenter.current.emit('pixel-complete');
 
         }
 
@@ -79,11 +80,21 @@ function iniMutantPixel(
         
     };
 
-    const last: eventPixel = (index, mark, changeMark, color)=>{
-        
-        changeMark(false);
-        
-    };
+    const Destroy = ()=>{
+
+        clearInterval(tempTimeInterval);
+
+    }
+    
+    eventCenter.current.on(`pixel-${_X}-${_Y}`, ({destroy})=>{
+
+        if(destroy){
+
+            Destroy();
+
+        }
+
+    });
 
     tempTimeInterval = setInterval(()=>{
 

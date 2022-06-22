@@ -35,6 +35,7 @@ function iniHeavyPixel(
             table.current[index.y][index.x].mark = false;    
 
             clearInterval(tempTimeInterval);
+            eventCenter.current.emit('pixel-complete');
 
         }
 
@@ -46,7 +47,23 @@ function iniHeavyPixel(
         
         
     };
+
+    const Destroy = ()=>{
+
+        clearInterval(tempTimeInterval);
+
+    }
     
+    eventCenter.current.on(`pixel-${_X}-${_Y}`, ({destroy})=>{
+
+        if(destroy){
+
+            Destroy();
+
+        }
+
+    });
+
     tempTimeInterval = setInterval(()=>{
 
         life++;
