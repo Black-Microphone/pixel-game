@@ -8,7 +8,7 @@ function ModalInitialInformation(){
 
         <h2>Tutorial</h2>
         <p>
-            GamePixels se trata de darle click a pixeles para borrarlos y ganar puntos en el menor tiempo posible.
+            GamePixels se trata de darle click a pixeles para borrarlos en el menor tiempo posible.
         </p>
         <h3>Tipos de pixeles</h3>
         <div className="pixel-info heavy">

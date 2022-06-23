@@ -72,7 +72,7 @@ function App() {
 
     }else{
 
-      store.set('history', [{time: 0, date: new Date()}]);
+      store.set('history', []);
 
     }
 
@@ -116,7 +116,7 @@ function App() {
     });
 
     const defaultStyle = {
-      transition: `all ${pixelTransition.duration}ms linear`,
+      transition: `all ${pixelTransition.duration}ms ease-in-out`,
     } as CSSProperties;
 
     const transitionStyles = {

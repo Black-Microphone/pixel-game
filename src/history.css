@@ -5,14 +5,14 @@
     width: 40px;
     height: 40px;
 
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.4);
 
     z-index: 100;
 
     border-radius: 100%;
 
     top: 15px;
-    right: 15px;
+    right: 7px;
 
     display: flex;
     flex-direction: column;
@@ -65,27 +65,46 @@
     z-index: 200;
 
 }
-
 .best,.mid,.poor{
 
     font-weight: bold;
+    color: white;
+
+    width: 100%;
+    padding: 10px;
+
+    display: grid;
+    grid-template-columns: 0.3fr repeat(3, 1fr);
+
+    justify-items: center;
+    align-items: center;
+
+    font-size: 1em;
 
 }
 
 .best{
 
-    color: green;
+    background-color: rgb(12, 189, 12);
 
 }
 
 .mid{
 
-    color: orange;
+    background-color: rgb(235, 157, 13);
 
 }
 
 .poor{
 
-    color: red;
+    background-color: rgb(240, 12, 12);
+
+}
+
+.h-item.remains{
+
+    font-family: monospace;
+
+    font-size: 2em;
 
 }
