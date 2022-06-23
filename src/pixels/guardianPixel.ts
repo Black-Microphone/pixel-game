@@ -1,8 +1,8 @@
 import { EventEmitter } from 'eventemitter3';
 import { MutableRefObject } from 'react';
-import { eventPixel, table } from './globalTypes';
-import { randomPixel, isOverLimit } from './globalFunc';
-import { InitialMovesObject } from './moves';
+import { eventPixel, table } from '../globalTypes';
+import { randomPixel, isOverLimit } from '../globalFunc';
+import { InitialMovesObject } from '../moves';
 
 function iniGuardianPixel(
     eventCenter: MutableRefObject<InstanceType<typeof EventEmitter<string | symbol, any>>>,

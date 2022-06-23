@@ -1,7 +1,7 @@
 import { EventEmitter } from 'eventemitter3';
 import { MutableRefObject } from 'react';
-import { eventPixel, table } from './globalTypes';
-import { randomPixel } from './globalFunc';
+import { eventPixel, table } from '../globalTypes';
+import { randomPixel } from '../globalFunc';
 
 function iniHeavyPixel(
     eventCenter: MutableRefObject<InstanceType<typeof EventEmitter<string | symbol, any>>>,

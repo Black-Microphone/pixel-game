@@ -27,12 +27,23 @@ function isOverLimit(c: number){
 
 }
 
+//first zero
+function firstZero(n: number){
+
+    const N = String(n);
+  
+    if(N.length === 1) return 0 + N;
+      else return N;
+  
+  }
+
 export {
 
     random,
     randomPixel,
     randomArrE,
-    isOverLimit
+    isOverLimit,
+    firstZero
 
 }
   

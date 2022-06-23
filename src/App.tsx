@@ -3,13 +3,16 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group';
 import './App.css';
 import { EventEmitter } from 'eventemitter3';
 import { transitionOpt } from './globalTypes';
-import { initSpeedPixel } from './pixelSpeed';
-import { iniMutantPixel } from './mutantPixel';
-import { iniHeavyPixel } from './heavyPixel';
-import { iniPsychoPixel } from './psychoPixel';
-import { iniGuardianPixel } from './guardianPixel';
+import { initSpeedPixel } from './pixels/pixelSpeed';
+import { iniMutantPixel } from './pixels/mutantPixel';
+import { iniHeavyPixel } from './pixels/heavyPixel';
+import { iniPsychoPixel } from './pixels/psychoPixel';
+import { iniGuardianPixel } from './pixels/guardianPixel';
 import { ModalInitialInformation } from './modal';
-import { eventPixel } from './globalTypes';
+import { eventPixel, IDH } from './globalTypes';
+import { firstZero } from './globalFunc';
+import store from 'store2';
+import { History } from './history';
 
 const size = 10;
 
@@ -24,16 +27,6 @@ const pixelTransition = {
 function GenerateTable(){
 
   return new Array(size).fill(0).map((v, Y)=>new Array(size).fill(0).map((e, X)=>({x: X, y: Y, mark: false})));
-
-}
-
-//first zero
-function firstZero(n: number){
-
-  const N = String(n);
-
-  if(N.length === 1) return 0 + N;
-    else return N;
 
 }
 
@@ -69,7 +62,19 @@ function App() {
 
       }
 
-    })
+    });
+
+    const history: IDH[] = store.get('history');
+
+    if(history && history.length){
+
+      history.push({date: new Date(), time: 0});
+
+    }else{
+
+      store.set('history', [{time: 0, date: new Date()}]);
+
+    }
 
   }, []);
 
@@ -162,10 +167,6 @@ function App() {
 
   }, []);
 
-  const [viewTime, setViewTime] = useState('---');
-  const time = useRef(0);
-  const timeStart = useRef(false);
-
   function resetTable(){
 
     tablesPositions.current.flat().forEach(({x, y})=>{
@@ -183,18 +184,30 @@ function App() {
 
   }
 
+  const [viewTime, setViewTime] = useState('00:00:00');
+  const time = useRef(0);
+  const timeStart = useRef(false);
+  const [indicatorTimeStart, setIndicatorTimeStart] = useState(false);
+
   function end(){
+
+    const history: IDH[] = store.get('history');
+    history.push({time: time.current, date: new Date()});
+    store.set('history', history);
 
     pixelsCompletes.current = 0;
     clearInterval(recordIntervalTime.current);
     resetTable();
     timeStart.current = false;
+    setIndicatorTimeStart(false);
 
   }
 
   function start(){
 
     if(!timeStart.current){
+
+      setIndicatorTimeStart(true);
 
       recordIntervalTime.current = undefined;
       time.current = 0;
@@ -223,9 +236,22 @@ function App() {
 
   }
 
+  const [viewHistory, setViewHistory] = useState(false);
+
   return (<div className="App">
+    <div className={'button-history ' + (viewHistory?'select':'')} onClick={()=>setViewHistory(v=>!v)}>
+
+      <div></div>
+      <div></div>
+      <div></div>
+
+    </div>
     <ModalInitialInformation/>
-    <div className='start' onClick={start}>{viewTime}</div><Table/>
+    <div className='start' onClick={start}>{viewTime} 
+      <div className='start-indicator'>{indicatorTimeStart?'🚴‍♂️':'🔴'}</div>
+    </div>
+    <Table/>
+    {viewHistory && <History/>}
   </div>);
 
 }

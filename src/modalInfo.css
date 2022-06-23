@@ -10,7 +10,7 @@
 
     padding: 20px;
 
-
+    z-index: 100;
 
     overflow: scroll;
 
@@ -102,5 +102,8 @@
     padding: 10px;
 
     border-radius: 3px;
+
+    margin-left: auto;
+    margin-right: auto;
 
 }

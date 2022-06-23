@@ -5,6 +5,18 @@ HTML{
 
 }
 
+body{
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+
+  width: 100vw;
+  height: 100vh;
+
+}
+
 .App{
 
   width: 100vw;
@@ -39,6 +51,9 @@ HTML{
 
   width: 95vw;
   height: 95vw;
+
+  max-width: 800px;
+  max-height: 800px;
   
   gap: 3px;
 
@@ -77,5 +92,15 @@ HTML{
   margin-bottom: 10px;
 
   border-radius: 5px;
+
+  position: relative;
+
+}
+
+.start .start-indicator{
+
+  position: absolute;
+
+  right: 10px;
 
 }
