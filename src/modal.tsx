@@ -24,7 +24,7 @@ function ModalInitialInformation(){
             <p>Se telenstranporta y cambia de posición rápidamente.</p>
         </div>
         <div className="pixel-info mutant">
-            <h4><div className="pixel"></div>Mutan</h4>
+            <h4><div className="pixel"></div>Mutant</h4>
             <p>Va generando copias alrededor de si mismo.</p>
         </div>
         <div className="pixel-info psycho">

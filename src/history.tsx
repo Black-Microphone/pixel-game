@@ -45,13 +45,13 @@ function History(){
     return (<div className="history">
         <h2>Marcas</h2>
         {top && <div className="h-item best">
-        🚴‍♂️<div>Mejor</div> <div>{getTimeFormatted(top.time)}</div> <div>{getDateString(top.date)}</div>
+            🚴‍♂️<div>Mejor</div> <div>{getTimeFormatted(top.time)}</div> <div>{getDateString(top.date)}</div>
         </div>}
         {mid && <div className="h-item mid">
-        📈<div>Promedio</div> <div>{getTimeFormatted(mid)}</div> 
+            📈<div>Promedio</div> <div>{getTimeFormatted(mid)}</div> 
         </div>}
         {poor && <div className="h-item poor">
-        🐢<div>Más bajo</div> <div>{getTimeFormatted(poor.time)}</div> <div>{getDateString(poor.date)}</div>
+            🐢<div>Más bajo</div> <div>{getTimeFormatted(poor.time)}</div> <div>{getDateString(poor.date)}</div>
         </div>}
         <h2>Historial</h2>
         {history.current.length && history.current.reverse().map(({date, time}, i)=>{
