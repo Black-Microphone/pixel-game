@@ -1,4 +1,4 @@
-# Game Pixel
+# Pixel Game
 ![Pixel Game LOGO](/public/PG.png)
 ## Descripción
 Es un juego donde debes presionar todos los píxeles de colores que apresen en pantalla en el menor tiempo posible.
