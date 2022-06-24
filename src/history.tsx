@@ -39,7 +39,7 @@ function History(){
 
         return {time: p.time + c.time, date: p.date};
 
-    }, {time: 0, date: new Date()}).time/(history.current.length);
+    }, {time: 0, date: new Date()}).time/(history.current.length) || 0;
     const top = historyOrder[historyOrder.length-1];
 
     return (<div className="history">
