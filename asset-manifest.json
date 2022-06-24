@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/pixel-game/static/css/main.4501cedf.css",
+    "main.js": "/pixel-game/static/js/main.f9e0eb9f.js",
+    "static/js/787.c1115aae.chunk.js": "/pixel-game/static/js/787.c1115aae.chunk.js",
+    "index.html": "/pixel-game/index.html",
+    "main.4501cedf.css.map": "/pixel-game/static/css/main.4501cedf.css.map",
+    "main.f9e0eb9f.js.map": "/pixel-game/static/js/main.f9e0eb9f.js.map",
+    "787.c1115aae.chunk.js.map": "/pixel-game/static/js/787.c1115aae.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4501cedf.css",
+    "static/js/main.f9e0eb9f.js"
+  ]
+}
