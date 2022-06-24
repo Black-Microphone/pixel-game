@@ -8,6 +8,6 @@ Es un juego donde debes precionar todos los pixeles de colores que aprecen en pa
 - Adaptabilidad y compatibilidad en PC, y teléfono.
 - Esta en español.
 ### Imágenes
-![Cap1](/public/Captura1.png)
-![Cap2](/public/Captura2.png)
-![Cap3](/public/Captura3.png)
+![Cap1](/imgs/Captura1.png)
+![Cap2](/imgs/Captura2.png)
+![Cap3](/imgs/Captura3.png)
